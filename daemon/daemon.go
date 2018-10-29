@@ -1088,7 +1088,16 @@ func createPrefixLengthCounter() *counter.PrefixLengthCounter {
 
 // NewDaemon creates and returns a new Daemon with the parameters set in c.
 func NewDaemon() (*Daemon, *endpointRestoreState, error) {
-	// Validate the daemon specific global options
+	// Prepopulate option.Config with options from CLI.
+	option.Config.Tunnel = viper.GetString(option.TunnelName)
+	option.Config.ClusterName = viper.GetString(option.ClusterName)
+	option.Config.ClusterID = viper.GetInt(option.ClusterIDName)
+	option.Config.ClusterMeshConfig = viper.GetString(option.ClusterMeshConfigName)
+	option.Config.CTMapEntriesGlobalTCP = viper.GetInt(option.CTMapEntriesGlobalTCPName)
+	option.Config.CTMapEntriesGlobalAny = viper.GetInt(option.CTMapEntriesGlobalAnyName)
+	option.Config.UseSingleClusterRoute = viper.GetBool(option.SingleClusterRouteName)
+
+	// Validate the daemon-specific global options.
 	if err := option.Config.Validate(); err != nil {
 		return nil, nil, fmt.Errorf("invalid daemon configuration: %s", err)
 	}
